@@ -1,0 +1,8 @@
+kops_cluster_name: "k8s.example.com"
+kops_state_store: "s3://preye-project-3"
+aws_region: "us-east-2"
+availability_zones:
+  - us-east-2a
+  - us-east-2b
+node_count: 2
+ssh_key_name: "linux"
