@@ -1,11 +1,5 @@
 # Created by https://www.gitignore.io/api/java,macos,eclipse,java-webv
 
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.backup
-.terraform.lock.hcl
-
 ### Eclipse ###
 
 .metadata
