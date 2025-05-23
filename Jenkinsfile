@@ -12,22 +12,20 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh 'docker build -t $IMAGE_NAME:latest .'
-                }
+                sh 'docker build -t $IMAGE_NAME:latest .'
             }
         }
         stage('Push to DockerHub') {
             steps {
-                script {
-                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
-                    sh 'docker push $IMAGE_NAME:latest'
-                }
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                sh 'docker push $IMAGE_NAME:latest'
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f deployment.yaml'
+                withCredentials([file(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG')]) {
+                    sh 'kubectl apply -f deployment.yaml'
+                }
             }
         }
     }
