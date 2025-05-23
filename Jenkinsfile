@@ -1,33 +1,33 @@
 pipeline {
     agent any
-
     environment {
-        DOCKER_HUB_CREDENTIALS = 'Docker-hub'
-        IMAGE_NAME = 'preyelg/web-calculator'
+        DOCKERHUB_CREDENTIALS = credentials('Docker-hub')
+        IMAGE_NAME = "geefted/webappcal"
     }
-
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'project-1', url: 'https://github.com/preyelg/project1.git'
+                git branch: 'project-3', url: 'https://github.com/preyelg/project1.git'
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:latest")
+                    sh 'docker build -t $IMAGE_NAME:latest .'
                 }
             }
         }
-
-        stage('Push to Docker Hub') {
+        stage('Push to DockerHub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
-                        docker.image("${IMAGE_NAME}:latest").push()
-                    }
+                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                    sh 'docker push $IMAGE_NAME:latest'
                 }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
             }
         }
     }
