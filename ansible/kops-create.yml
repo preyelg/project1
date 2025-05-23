@@ -3,6 +3,14 @@
   vars_files:
     - vars/kops-vars.yml
   tasks:
+    - name: Ensure SSH public key exists (generate from linux.pem if needed)
+      ansible.builtin.shell: |
+        if [ ! -f ~/.ssh/linux.pub ] && [ -f ~/.ssh/linux.pem ]; then
+          ssh-keygen -y -f ~/.ssh/linux.pem > ~/.ssh/linux.pub
+        fi
+      args:
+        executable: /bin/bash
+
     - name: Export KOPS_STATE_STORE
       ansible.builtin.shell: |
         export KOPS_STATE_STORE={{ kops_state_store }}
@@ -17,7 +25,7 @@
           --node-count={{ node_count }} \
           --node-size=t3.medium \
           --master-size=t3.medium \
-          --ssh-public-key=~/.ssh/id_rsa.pub \
+          --ssh-public-key={{ ssh_key_path }} \
           --cloud=aws \
           --yes
       environment:
@@ -28,3 +36,4 @@
         kops validate cluster --name {{ kops_cluster_name }} --wait 10m
       environment:
         KOPS_STATE_STORE: "{{ kops_state_store }}"
+

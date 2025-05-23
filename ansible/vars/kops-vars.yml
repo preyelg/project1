@@ -5,4 +5,4 @@ availability_zones:
   - us-east-2a
   - us-east-2b
 node_count: 2
-ssh_key_name: "linux"
+ssh_key_path: "/home/ubuntu/.ssh/linux.pub"
