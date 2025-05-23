@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('Docker-hub')
-        IMAGE_NAME = "geefted/webappcal"
+        IMAGE_NAME = "preyelg/webappcal"
     }
     stages {
         stage('Checkout') {
